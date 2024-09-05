@@ -170,7 +170,7 @@ with st.sidebar:
         load_data_into_vectorstore(vector_store, chunks)
         print("Documents loaded.")
 
-chain = load_chain(vector_store, openai_api_key)
+chain = load_chain(vector_store, openai_api_key, huggingface_api_key)
 
 if 'generated' not in st.session_state:
     st.session_state['generated'] = []
