@@ -1,0 +1,6 @@
+requests
+langchain
+qdrant_client
+streamlit
+tiktoken
+streamlit_chat
