@@ -125,20 +125,22 @@ def cache_headers(notion_api_key: str):
 
 
 @st.cache_resource
-def load_chain(_client, api_key: str):
-    if len(api_key) == 0:
-        api_key = "temp value"
-    embeddings = OpenAIEmbeddings(openai_api_key=api_key)
+def load_chain(_client, embed_api_key: str, infer_api_key: str):
+    if len(embed_api_key) == 0:
+        embed_api_key = "temp value"
+    if len(infer_api_key) == 0:
+        infer_api_key = "temp value"
+    embeddings = OpenAIEmbeddings(openai_api_key=embed_api_key)
     vectorstore = Qdrant(client=_client, collection_name="notion_streamlit", embeddings=embeddings)
     chain = ConversationalRetrievalChain.from_llm(
             llm=HuggingFaceHub(
                 repo_id='mistralai/Mistral-7B-v0.1', 
                 model_kwargs={"temperature": 0.2, 
                             "max_length": 128},
-                huggingfacehub_api_token=api_key,
+                huggingfacehub_api_token=infer_api_key,
             ),
             # llm=ChatOpenAI(temperature=0.0, model_name='gpt-3.5-turbo',
-            # openai_api_key=api_key),
+            # openai_api_key=infer_api_key),
             retriever=vectorstore.as_retriever()
     )
     return chain
@@ -149,8 +151,8 @@ st.title('Chat With Your Notion Documents!')
 vector_store = connect_to_vectorstore()
 with st.sidebar:
     openai_api_key = st.text_input(label='#### Your OpenAI API Key', placeholder="Paste your OpenAI API key here", type="password")
-    notion_api_key = st.text_input(label='#### Your Notion API Key', placeholder="Paste your Notion API key here",
-                                 type="password")
+    huggingface_api_key = st.text_input(label='#### Your HuggingFace API Key', placeholder="Paste your HuggingFace API key here", type="password")
+    notion_api_key = st.text_input(label='#### Your Notion API Key', placeholder="Paste your Notion API key here", type="password")
 
     notion_headers = cache_headers(notion_api_key)
 
