@@ -1,13 +1,13 @@
+from typing import List
 import requests
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.vectorstores import Qdrant
 from langchain.chains import ConversationalRetrievalChain
-from langchain.vectorstores.qdrant import Qdrant
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
-from typing import List
-import streamlit as st
 import tiktoken
+import streamlit as st
 from streamlit_chat import message
 
 
@@ -105,7 +105,7 @@ def load_data_into_vectorstore(client, docs: List[str]):
 
 @st.cache_resource
 def connect_to_vectorstore():
-    client = QdrantClient(host="localhost", port=6333, path="/path/to/qdrant/qdrant_storage")
+    client = QdrantClient(":memory:")
     try:
         client.get_collection("notion_streamlit")
     except Exception as e:
