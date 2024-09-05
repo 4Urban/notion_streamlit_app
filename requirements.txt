@@ -1,5 +1,6 @@
 requests
 langchain
+langchain_community
 qdrant_client
 streamlit
 tiktoken
