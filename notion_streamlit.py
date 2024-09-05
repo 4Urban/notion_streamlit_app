@@ -1,6 +1,6 @@
 from typing import List
 import requests
-from langchain_openai import ChatOpenAI
+from langchain_community.chat_models import ChatOpenAI
 from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.vectorstores import Qdrant
 from langchain.chains import ConversationalRetrievalChain
