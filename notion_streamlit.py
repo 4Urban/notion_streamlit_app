@@ -1,8 +1,8 @@
 from typing import List
 import requests
-from langchain_community.chat_models import ChatOpenAI
-from langchain_community.embeddings import OpenAIEmbeddings
-from langchain_community.vectorstores import Qdrant
+from langchain_openai import OpenAIEmbeddings
+from langchain_qdrant import Qdrant
+from langchain_openai import ChatOpenAI
 from langchain.chains import ConversationalRetrievalChain
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
@@ -98,7 +98,7 @@ def chunk_tokens(text: str, token_limit: int) -> list:
 
 def load_data_into_vectorstore(client, docs: List[str]):
     embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-    qdrant_client = Qdrant(client=client, collection_name="notion_streamlit", embedding_function=embeddings.embed_query)
+    qdrant_client = Qdrant(client=client, collection_name="notion_streamlit", embeddings=embeddings)
     ids = qdrant_client.add_texts(docs)
     return ids
 
@@ -128,7 +128,7 @@ def load_chain(_client, api_key: str):
     if len(api_key) == 0:
         api_key = "temp value"
     embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-    vectorstore = Qdrant(client=_client, collection_name="notion_streamlit", embedding_function=embeddings.embed_query)
+    vectorstore = Qdrant(client=_client, collection_name="notion_streamlit", embeddings=embeddings)
     chain = ConversationalRetrievalChain.from_llm(
             llm=ChatOpenAI(temperature=0.0, model_name='gpt-3.5-turbo',
             openai_api_key=api_key),
